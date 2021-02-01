@@ -1,6 +1,6 @@
-# Getting Started with Create React App
+# roboloving
 
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+Simple react app for finding the perfect robot for you
 
 ## Available Scripts
 
