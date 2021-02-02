@@ -2,15 +2,17 @@ import React, { Component } from 'react';
 import CardList from '../components/CardList';
 import SearchBox from '../components/SearchBox';
 import Scroll from '../components/Scroll';
+import Modal from '../components/Modal';
 import './App.css';
-
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
       robots: [],
-      searchField: ''
+      searchField: '',
+      modalVisible: true,
+      bgBlur: true
     }
   }
 
@@ -24,20 +26,30 @@ class App extends Component {
     this.setState({ searchField: event.target.value })
   }
 
+  toggleModal = event => {
+    this.setState({ 
+      modalVisible: !this.state.modalVisible,
+      bgBlur: !this.state.bgBlur
+    })
+  }
+
   render() {
     const { robots, searchField } = this.state;
     const filteredRobots = robots.filter(robot => {
       return robot.name.toLowerCase().includes(searchField.toLowerCase());
     })
     return !robots.length ?
-      <h1>Loading</h1> :
+      <h1 className='tc f1'>Loading</h1> :
       (
         <div className='tc'>
-          <h1 className = 'f1'> RoboLoving</h1>
-          <SearchBox searchChange={this.onSearchChange}/>
-          <Scroll>
-            <CardList robots={filteredRobots} />
-          </Scroll>
+          <Modal visible={this.state.modalVisible} toggle={this.toggleModal} />
+          <h1 className = 'f1'>RoboLoving</h1>
+          <div className={`tc ${this.state.bgBlur ? 'dn' : ''}`}>
+            <SearchBox searchChange={this.onSearchChange}/>
+            <Scroll>
+              <CardList robots={filteredRobots} />
+            </Scroll>
+          </div>
         </div>
       );
   }
