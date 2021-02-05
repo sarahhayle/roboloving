@@ -7,8 +7,8 @@ const Modal = ({ visible, toggle }) => {
   }
 
   return (
-    <div className='centered tc bg-light-green dib br3 pa3 shadow-5'>
-      <h2>Are you a robot?</h2>
+    <span className='centered tc bg-light-green dib br3 pa3 shadow-5'>
+      <h2 className='db'>Are you a robot?</h2>
       <button
         className='pa3 ba b--green bg-lightest-blue br3'
         onClick={() => toggle()}>
@@ -19,7 +19,7 @@ const Modal = ({ visible, toggle }) => {
         onClick={() => window.location.href='https://mitpress.mit.edu/books/robot-rights'}>
           No I'm human, please escort me away
       </button>
-    </div>
+    </span>
   )
 }
 

@@ -3,24 +3,28 @@ import CardList from '../components/CardList';
 import SearchBox from '../components/SearchBox';
 import Scroll from '../components/Scroll';
 import Modal from '../components/Modal';
+import Deck from '../components/Deck';
+import { robots } from '../components/robots'
 import './App.css';
+import '../components/Deck.css';
 
 class App extends Component {
   constructor() {
     super()
     this.state = {
-      robots: [],
+      // robots: [],
       searchField: '',
       modalVisible: true,
-      bgBlur: true
+      hideBg: true
     }
+    this.ref = React.createRef();
   }
 
-  componentDidMount() {
-    fetch('https://jsonplaceholder.typicode.com/users')
-      .then(response => response.json())
-      .then(users => this.setState({ robots: users }))
-  }
+  // componentDidMount() {
+  //   fetch('https://jsonplaceholder.typicode.com/users')
+  //     .then(response => response.json())
+  //     .then(users => this.setState({ robots: users }))
+  // }
 
   onSearchChange = event => {
     this.setState({ searchField: event.target.value })
@@ -29,29 +33,33 @@ class App extends Component {
   toggleModal = event => {
     this.setState({ 
       modalVisible: !this.state.modalVisible,
-      bgBlur: !this.state.bgBlur
+      hideBg: !this.state.hideBg
     })
   }
 
   render() {
-    const { robots, searchField } = this.state;
+    const { searchField } = this.state;
     const filteredRobots = robots.filter(robot => {
-      return robot.name.toLowerCase().includes(searchField.toLowerCase());
+      return searchField ? 
+        robot.name.toLowerCase().includes(searchField.toLowerCase())
+      : null;
     })
-    return !robots.length ?
-      <h1 className='tc f1'>Loading</h1> :
-      (
+
+    return (
         <div className='tc'>
+          <h1 className='f1'>RoboLoving</h1>
           <Modal visible={this.state.modalVisible} toggle={this.toggleModal} />
-          <h1 className = 'f1'>RoboLoving</h1>
-          <div className={`tc ${this.state.bgBlur ? 'dn' : ''}`}>
-            <SearchBox searchChange={this.onSearchChange}/>
+          {!this.state.hideBg ?
+          <>
             <Scroll>
-              <CardList robots={filteredRobots} />
+              <Deck/>
             </Scroll>
-          </div>
+            <SearchBox searchChange={this.onSearchChange}/>
+            <CardList className='scroll' robots={filteredRobots} />
+          </>
+          : null}
         </div>
-      );
+    );
   }
 }
 
