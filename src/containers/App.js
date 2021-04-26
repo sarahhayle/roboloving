@@ -4,7 +4,8 @@ import SearchBox from '../components/SearchBox';
 import Scroll from '../components/Scroll';
 import Modal from '../components/Modal';
 import Deck from '../components/Deck';
-import { robots } from '../components/robots'
+import ErrorBoundary from '../components/ErrorBoundary';
+import { robots } from '../components/robots';
 import './App.css';
 import '../components/Deck.css';
 
@@ -46,8 +47,9 @@ class App extends Component {
     })
 
     return (
-        <div className='tc'>
-          <h1 className='f1'>RoboLoving</h1>
+      <div className='tc'>
+        <h1 className='f1'>RoboLoving</h1>
+        <ErrorBoundary>
           <Modal visible={this.state.modalVisible} toggle={this.toggleModal} />
           {!this.state.hideBg ?
           <>
@@ -58,7 +60,8 @@ class App extends Component {
             <CardList className='scroll' robots={filteredRobots} />
           </>
           : null}
-        </div>
+        </ErrorBoundary>
+      </div>
     );
   }
 }
