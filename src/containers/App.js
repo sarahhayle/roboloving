@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import React, { useState } from 'react';
 import CardList from '../components/CardList';
 import SearchBox from '../components/SearchBox';
 import Scroll from '../components/Scroll';
@@ -9,17 +9,11 @@ import { robots } from '../components/robots';
 import './App.css';
 import '../components/Deck.css';
 
-class App extends Component {
-  constructor() {
-    super()
-    this.state = {
-      // robots: [],
-      searchField: '',
-      modalVisible: true,
-      hideBg: true
-    }
-    this.ref = React.createRef();
-  }
+function App() {
+  // const [robots, setRobots] = useState([]);
+  const [searchField, setSearchField] = useState('');
+  const [modal, toggleModal] = useState(true);
+  const [content, toggleContent] = useState(true);
 
   // componentDidMount() {
   //   fetch('https://jsonplaceholder.typicode.com/users')
@@ -27,43 +21,39 @@ class App extends Component {
   //     .then(users => this.setState({ robots: users }))
   // }
 
-  onSearchChange = event => {
-    this.setState({ searchField: event.target.value })
+  const onSearchChange = event => {
+    setSearchField(event.target.value);
   }
 
-  toggleModal = event => {
-    this.setState({ 
-      modalVisible: !this.state.modalVisible,
-      hideBg: !this.state.hideBg
-    })
+  const goToHome = () => {
+    toggleModal(!modal);
+    toggleContent(!content);
   }
 
-  render() {
-    const { searchField } = this.state;
-    const filteredRobots = robots.filter(robot => {
-      return searchField ? 
-        robot.name.toLowerCase().includes(searchField.toLowerCase())
-      : null;
-    })
+  const filteredRobots =
+    robots.filter(robot => {
+    return searchField ? 
+      robot.name.toLowerCase().includes(searchField.toLowerCase())
+    : null;
+  })
 
-    return (
-      <div className='tc'>
-        <h1 className='f1'>RoboLoving</h1>
-        <ErrorBoundary>
-          <Modal visible={this.state.modalVisible} toggle={this.toggleModal} />
-          {!this.state.hideBg ?
-          <>
-            <Scroll>
-              <Deck/>
-            </Scroll>
-            <SearchBox searchChange={this.onSearchChange}/>
-            <CardList className='scroll' robots={filteredRobots} />
-          </>
-          : null}
-        </ErrorBoundary>
-      </div>
-    );
-  }
+  return (
+    <div className='tc'>
+      <h1 className='f1'>RoboLoving</h1>
+      <ErrorBoundary>
+        <Modal visible={modal} toggle={goToHome} />
+        {!content ?
+        <>
+          <Scroll>
+            <Deck/>
+          </Scroll>
+          <SearchBox searchChange={onSearchChange}/>
+          <CardList className='scroll' robots={filteredRobots} />
+        </>
+        : null}
+      </ErrorBoundary>
+    </div>
+  );
 }
 
 export default App;

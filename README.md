@@ -1,6 +1,6 @@
 # roboloving
 
-Simple react app for finding the perfect robot for you. Robots only.
+Simple react app for finding the perfect robot for you. Robots only.\
 [https://sarahhayle.github.io/roboloving](https://sarahhayle.github.io/roboloving)
 
 Current functionality:
