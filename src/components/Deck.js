@@ -18,16 +18,12 @@ const from = i => ({  x: 0, rot: 0, scale: 1.5, y: -1000 });
 const trans = (r, s) =>
   `perspective(1500px) rotateX(30deg) rotateY(${r /10}deg) rotateZ(${r}deg) scale(${s})`;
 
-function Deck() {
-  const [nope] = useState(() => new Set());
+function Deck({ setChosenRobos, chosenRobos }) {
+  const [swiped] = useState(() => new Set());
   const [props, set] = useSprings(robots.length, i => ({
     ...to(i),
     from: from(i)
   }))
-  console.log('robotsL', robots.length);
-  
-
-  console.log('props', props)
 
   const bind = useGesture(
     ({
@@ -42,15 +38,17 @@ function Deck() {
 
       const dir = xDir < 0 ? -1 : 1;
 
-      if (!down && trigger) nope.add(index);
+      if (!down && trigger) swiped.add(index);
+
+      if (!down && trigger && dir >= 1) setChosenRobos(chosenRobos => [...chosenRobos, robots[index]]);
 
       set(i => {
         if (index !== i) return;
-        const isNope = nope.has(index);
+        const beenSwiped = swiped.has(index);
 
-        const x = isNope ? (200 + window.innerWidth) * dir : down ? xDelta : 0;
+        const x = beenSwiped ? (200 + window.innerWidth) * dir : down ? xDelta : 0;
 
-        const rot = xDelta / 100 + (isNope ? dir * 10 * velocity : 0);
+        const rot = xDelta / 100 + (beenSwiped ? dir * 10 * velocity : 0);
 
         const scale = down ? 1.1 : 1;
         return {
@@ -58,12 +56,12 @@ function Deck() {
           rot,
           scale,
           delay: undefined,
-          config: { friction: 50, tension: down ? 800 : isNope ? 200 : 500 }
+          config: { friction: 50, tension: down ? 800 : beenSwiped ? 200 : 500 },
         };
       });
 
-      if (!down && nope.size === robots.length)
-        setTimeout(() => nope.clear() || set(i => to(i)), 600);
+      if (!down && swiped.size === robots.length)
+        setTimeout(() => swiped.clear() || set(i => to(i)), 600);
     }
   );
 
@@ -78,6 +76,7 @@ function Deck() {
     trans={trans}
     robots={robots}
     bind={bind}
+    chosenRobos={chosenRobos}
   />
   ));
 }

@@ -5,15 +5,14 @@ import Scroll from '../components/Scroll';
 import Modal from '../components/Modal';
 import Deck from '../components/Deck';
 import ErrorBoundary from '../components/ErrorBoundary';
-import { robots } from '../components/robots';
 import './App.css';
 import '../components/Deck.css';
 
 function App() {
-  // const [robots, setRobots] = useState([]);
   const [searchField, setSearchField] = useState('');
   const [modal, toggleModal] = useState(true);
   const [content, toggleContent] = useState(true);
+  const [chosenRobos, setChosenRobos] = useState([]);
 
   // componentDidMount() {
   //   fetch('https://jsonplaceholder.typicode.com/users')
@@ -30,8 +29,8 @@ function App() {
     toggleContent(!content);
   }
 
-  const filteredRobots =
-    robots.filter(robot => {
+  const filteredRobos =
+    chosenRobos.filter(robot => {
     return searchField ? 
       robot.name.toLowerCase().includes(searchField.toLowerCase())
     : null;
@@ -45,10 +44,10 @@ function App() {
         {!content ?
         <>
           <Scroll>
-            <Deck/>
+            <Deck setChosenRobos={setChosenRobos} chosenRobos={chosenRobos}/>
           </Scroll>
           <SearchBox searchChange={onSearchChange}/>
-          <CardList className='scroll' robots={filteredRobots} />
+          <CardList className='scroll' robots={filteredRobos} />
         </>
         : null}
       </ErrorBoundary>
