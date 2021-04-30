@@ -9,14 +9,14 @@ const Card = ({
   scale,
   trans,
   bind,
-  robots,
+  robos,
 }) => {
-  const { id, name, email } = robots[i];
+  const { id, name, email } = robos[i];
 
   return !x ?
   (
     <div className='tc bg-light-green dib br3 pa3 ma2 grow bw2 shadow-5'>
-      <img alt='robots' src={`https://robohash.org/${id}?200x200`} />
+      <img alt='robo' src={`https://robohash.org/${id}?200x200`} />
       <div>
         <h2> {name} </h2>
         <p> {email} </p>
@@ -35,7 +35,7 @@ const Card = ({
         className='bg-light-green cardInDeck'
       >
       <div className='tc bg-light-green card'>
-        <img alt='robots' src={`https://robohash.org/${id}?200x200`} />
+        <img alt='robo' src={`https://robohash.org/${id}?200x200`} />
         <h2> {name} </h2>
         <p> {email} </p>
       </div>

@@ -80,6 +80,7 @@ h5 {
   margin-left: 2px;
   color: lightgray;
 }
+
 h5:last-of-type {
   color: darkgray;
 }
