@@ -3,7 +3,6 @@ import Card from './Card';
 import { useSprings } from 'react-spring';
 import { useGesture } from 'react-with-gesture';
 import './Deck.css';
-import { robots } from  './robots';
 
 const to = i => ({
   x: 0,
@@ -18,9 +17,14 @@ const from = i => ({  x: 0, rot: 0, scale: 1.5, y: -1000 });
 const trans = (r, s) =>
   `perspective(1500px) rotateX(30deg) rotateY(${r /10}deg) rotateZ(${r}deg) scale(${s})`;
 
-function Deck({ setChosenRobos, chosenRobos }) {
+const Deck = ({
+  swipeableRobos,
+  setSwipeableRobos,
+  setChosenRobos,
+  chosenRobos
+}) => {
   const [swiped] = useState(() => new Set());
-  const [props, set] = useSprings(robots.length, i => ({
+  const [props, set] = useSprings(swipeableRobos.length, i => ({
     ...to(i),
     from: from(i)
   }))
@@ -38,9 +42,17 @@ function Deck({ setChosenRobos, chosenRobos }) {
 
       const dir = xDir < 0 ? -1 : 1;
 
-      if (!down && trigger) swiped.add(index);
+      if (!down && trigger) {
+        swiped.add(index);
+        if (dir >= 1) {
+          setChosenRobos(
+            chosenRobos => [...chosenRobos, swipeableRobos[index]]
+          )
+        }
+        swipeableRobos.splice(index, 1)
+        setSwipeableRobos(swipeableRobos)
+      }
 
-      if (!down && trigger && dir >= 1) setChosenRobos(chosenRobos => [...chosenRobos, robots[index]]);
 
       set(i => {
         if (index !== i) return;
@@ -59,24 +71,20 @@ function Deck({ setChosenRobos, chosenRobos }) {
           config: { friction: 50, tension: down ? 800 : beenSwiped ? 200 : 500 },
         };
       });
-
-      if (!down && swiped.size === robots.length)
-        setTimeout(() => swiped.clear() || set(i => to(i)), 600);
     }
   );
 
   return props.map(({ x, y, rot, scale }, i) => (
    <Card
-    key={robots[i].id}
+    key={swipeableRobos[i].id}
     i={i}
     x={x}
     y={y}
     rot={rot}
     scale={scale}
     trans={trans}
-    robots={robots}
+    robos={swipeableRobos}
     bind={bind}
-    chosenRobos={chosenRobos}
   />
   ));
 }

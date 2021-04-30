@@ -1,17 +1,19 @@
 import React, { useState } from 'react';
-import CardList from '../components/CardList';
-import SearchBox from '../components/SearchBox';
-import Scroll from '../components/Scroll';
+import { BrowserRouter as Router, Route } from 'react-router-dom';
 import Modal from '../components/Modal';
-import Deck from '../components/Deck';
 import ErrorBoundary from '../components/ErrorBoundary';
-import './App.css';
+import NavBar from '../components/NavBar/NavBar'
+import GlobalFonts from '../fonts/fonts';
 import '../components/Deck.css';
+import Home from '../components/Home';
+import Matches from '../components/Matches';
+import { robots as robos } from '../components/robots';
 
 function App() {
   const [searchField, setSearchField] = useState('');
   const [modal, toggleModal] = useState(true);
-  const [content, toggleContent] = useState(true);
+  const [content, toggleContent] = useState(false);
+  const [swipeableRobos, setSwipeableRobos] = useState([]);
   const [chosenRobos, setChosenRobos] = useState([]);
 
   // componentDidMount() {
@@ -27,31 +29,41 @@ function App() {
   const goToHome = () => {
     toggleModal(!modal);
     toggleContent(!content);
+    setSwipeableRobos(robos);
   }
 
   const filteredRobos =
-    chosenRobos.filter(robot => {
+    chosenRobos.filter(robo => {
     return searchField ? 
-      robot.name.toLowerCase().includes(searchField.toLowerCase())
-    : null;
+      robo.name.toLowerCase().includes(searchField.toLowerCase())
+    : chosenRobos;
   })
 
   return (
-    <div className='tc'>
-      <h1 className='f1'>RoboLoving</h1>
-      <ErrorBoundary>
-        <Modal visible={modal} toggle={goToHome} />
-        {!content ?
-        <>
-          <Scroll>
-            <Deck setChosenRobos={setChosenRobos} chosenRobos={chosenRobos}/>
-          </Scroll>
-          <SearchBox searchChange={onSearchChange}/>
-          <CardList className='scroll' robots={filteredRobos} />
-        </>
-        : null}
-      </ErrorBoundary>
-    </div>
+      <div className='tc'>
+        <ErrorBoundary>
+          <GlobalFonts />
+          <Modal visible={modal} toggle={goToHome} />
+          {content ?
+            <>
+              <Router>
+                <NavBar />
+                  <Route path="/matches">
+                    <Matches robos={filteredRobos} searchChange={onSearchChange} />
+                  </Route>
+                  <Route path="/" exact>
+                    <Home
+                      swipeableRobos={swipeableRobos}
+                      setSwipeableRobos={setSwipeableRobos}
+                      chosenRobos={chosenRobos}
+                      setChosenRobos={setChosenRobos}
+                    />
+                  </Route>
+              </Router>
+            </>
+          : null }
+        </ErrorBoundary>
+      </div>
   );
 }
 
